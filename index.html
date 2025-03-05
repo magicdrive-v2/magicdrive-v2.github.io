@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="High-Resolution Long Video Generation
+for Autonomous Driving with Adaptive Control">
+  <meta name="keywords" content="MagicDrive-V2, street-view generation, video
+  generation, DiT, high-resolution">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MagicDrive-V2: High-Resolution Long Video Generation for Autonomous Driving with Adaptive Control</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <!-- <link rel="stylesheet" href="./static/css/bulma-carousel.min.css"> -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-carousel@4.0.3/dist/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="./static/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.ico">
+
+  <script src="./static/js/jquery-3.2.1.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/jquery.event.move.js"></script>
+  <!-- <script src="./static/js/bulma-carousel.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/bulma-carousel@4.0.3/dist/js/bulma-carousel.min.js"></script>
+  <!-- <script src="./static/js/index.js"></script> -->
+
+</head>
+
+<body>
+
+  <!-- <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+  </nav> -->
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <!-- <div class="logo">
+              <img src="static/images/logo.png" width="20%" height="20%">
+            </div>
+            <br> -->
+
+            <h1 class="title is-1 publication-title">
+              <i>MagicDrive-V2:</i> High-Resolution Long Video Generation for Autonomous Driving with Adaptive Control
+            </h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <!-- <a href="https://magic-drive.github.io">Anonymous</a></span> -->
+                Anonymous</span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">Anonymous Institution</span>
+            </div>
+
+            <!-- <div class="is-size-5 publication-authors">
+          </div> -->
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <p class="content has-text-centered is-size-4">
+          Take a quick look at <span class="dnerf">MagicDrive-V2</span> through
+          the video, better viewed on large screen with music <i class='fas fa-music'></i>!
+        </p>
+
+        <div class="columns is-centered has-text-centered">
+          <video poster="./static/images/teaser-poster.webp" id="teaser" controls preload="none" width="100%">
+            <source src="./static/video/teaser.mp4" type="video/mp4">
+          </video>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <!-- Abstract. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-five-sixths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              The rapid advancement of diffusion models has greatly improved
+              video synthesis, especially in controllable video generation,
+              which is vital for applications like autonomous driving. Although
+              DiT with 3D VAE has become a standard framework for video
+              generation, it introduces challenges in controllable driving video
+              generation, especially for geometry control, rendering existing
+              control methods ineffective. To address these issues, we propose
+              <span class="dnerf">MagicDrive-V2</span>, a novel approach that
+              integrates the MVDiT block and spatial-temporal conditional
+              encoding to enable multi-view video generation and precise
+              geometric control. Additionally, we introduce an efficient method
+              for obtaining contextual descriptions for videos to support
+              diverse textual control, along with a progressive training
+              strategy using mixed video data to enhance training efficiency and
+              generalizability. Consequently, <span class="dnerf">MagicDrive-V2</span> enables multi-view driving
+              video synthesis with 3.3× resolution and 4× frame count (compared
+              to current SOTA), rich contextual control, and geometric controls.
+              Extensive experiments demonstrate <span class="dnerf">MagicDrive-V2</span>’s ability, unlocking broader
+              applications in autonomous driving.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!--/ Abstract. -->
+
+    </div>
+  </section>
+
+  <section class="hero is-small">
+    <div class="hero-body">
+      <div class="container">
+        <div class="columns is-max-desktop">
+          <div class="column has-text-centered">
+            <span class="hero is-warning" style="max-width:fit-content;margin:auto">
+              <h2 class="title is-4">
+                All generated videos on this page are
+                <span style="color: brown;">6&times;848&times;1600</span> with
+                <span style="color: brown;">20s</span> at
+                <span style="color: brown;">12 FPS</span> from <span style="color:
+              brown;">single inference</span>!
+              </h2>
+            </span>
+          </div>
+        </div>
+        <br><br>
+        <div id="results-carousel1" class="carousel results-carousel">
+
+          <div class='item item-examples'>
+            <div class="item-1">
+              <video playsinline controls muted loop width="100%">
+                <source data-src="./static/video/samples/sample_0099_1696x4800_f241_fps12_filter.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+          <div class='item item-examples'>
+            <div class="item-2">
+              <video playsinline controls muted loop width="100%">
+                <source data-src="./static/video/samples/sample_0107_1696x4800_f233_fps12_filter_rainy+.mp4"
+                  type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+          <div class='item item-examples'>
+            <div class="item-3">
+              <video playsinline controls muted loop width="100%">
+                <source data-src="./static/video/samples/sample_0060_1696x4800_f233_fps12_filter_sunny+.mp4"
+                  type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+          <div class='item item-examples'>
+            <div class="item-4">
+              <video playsinline controls muted loop width="100%">
+                <source data-src="./static/video/samples/sample_0126_1696x4800_f233_fps12_filter_night+.mp4"
+                  type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+          <div class='item item-examples'>
+            <div class="item-5">
+              <video playsinline controls muted loop width="100%">
+                <source data-src="./static/video/samples/sample_0056_1696x4800_f241_fps12_filter_sunny+.mp4"
+                  type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+          <div class='item item-examples'>
+            <div class="item-4">
+              <video playsinline controls muted loop width="100%">
+                <source data-src="./static/video/samples/sample_0124_1696x4800_f233_fps12_filter_sunny+.mp4"
+                  type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const carouselElement = document.querySelector('#results-carousel1');
+      const items = carouselElement.querySelectorAll('[class^="item-"]');
+
+      // add poster
+      items.forEach(item => {
+        const video = item.querySelector('video');
+        const source = video.querySelector('source');
+        const videoSrc = source.dataset.src || source.src;
+
+        if (videoSrc) {
+          const videoName = videoSrc.split('/').pop().split('.').shift();
+          const posterPath = `./static/video/covers/${videoName}.jpg`;
+          video.setAttribute('poster', posterPath);
+        }
+      });
+
+      // Initialize the carousel with autoplay
+      const carousel = bulmaCarousel.attach('#results-carousel1', {
+        slidesToScroll: 1,
+        slidesToShow: 1,
+        loop: true,
+        infinite: false,
+        autoplay: false,
+        breakpoints: [],
+      })[0];
+
+      // Function to load video source
+      function loadVideo(videoElement) {
+        const source = videoElement.querySelector('source');
+        if (source.dataset.src && !source.src) {
+          source.src = source.dataset.src;
+          videoElement.load();
+        }
+      }
+
+      // Function to handle video play/pause
+      function handleVideos(bulmaCarouselInstance) {
+        if (bulmaCarouselInstance && bulmaCarouselInstance.next) {
+          currentIndex = bulmaCarouselInstance.next
+        } else {
+          currentIndex = 0
+        }
+        items.forEach((item, index) => {
+          const video = item.querySelector('video');
+          if (index === currentIndex) {
+            loadVideo(video);
+            video.currentTime = 0; // Reset to start
+            video.play();
+          } else {
+            video.pause();
+          }
+        });
+      }
+
+      // Listen for carousel slide changes
+      carousel.on('after:show', function (bulmaCarouselInstance) {
+        handleVideos(bulmaCarouselInstance);
+      });
+
+      // Initial load
+      handleVideos();
+    });
+  </script>
+
+  <section class="hero is-light is-small">
+    <div class="hero-body">
+      <div class="container">
+
+        <h2 class="title is-3">Architecture: Multi-View DiT for Scalable Video Generation</h2>
+        <div class="columns is-centered has-text-centered">
+          <img src="./static/images/overview_half.png" alt="architecture of MagicDrive-V2" width="60%">
+        </div>
+        <p class="content has-text-left is-size-5">
+          <span class="dnerf">MagicDrive-V2</span> adopts a newly proposed
+          multi-view DiT architecture for multi-view street video generation.
+          Together with the control blocks, <span class="dnerf">MagicDrive-V2</span> is capable of multiple control
+          signals for fine-grained geometric control.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero is-small">
+    <div class="hero-body">
+      <div class="container">
+
+        <h2 class="title is-3">Control: Spatial-Temporal Encoding for Conditions.</h2>
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-sixths">
+            <img src="./static/images/vae.jpg" alt="MagicDrive-V2 encoding" width="95%">
+          </div>
+          <div class="column is-two-sixths">
+            <img src="./static/images/overview_half2.png" alt="MagicDrive-V2
+        encoding" width="65%" style="padding-top: 8%;">
+          </div>
+        </div>
+        <p class="content has-text-left is-size-5">
+          <i>Left/Up:</i> The spatial-temporal latents produced by 3D VAE cannot fit
+          previous strategies on spatial latents.
+          <i>Right/Down:</i><span class="dnerf">MagicDrive-V2</span> adopts spatial
+          temporal encoding for each condition to correctly control the video
+          generation.
+        </p>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="hero is-small is-light">
+    <div class="hero-body">
+      <div class="container">
+        <h2 class="title is-3">Training: Progressive Training with Mixed Data
+          Configurations</h2>
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-three-sixths">
+            <img src="./static/images/stages.jpg" alt="MagicDrive-V2 stages" width="95%">
+          </div>
+          <div class="column is-three-sixths">
+            <img src="./static/images/mixing.jpg" alt="MagicDrive-V2 data" width="100%" style="padding-top: 1%;">
+          </div>
+        </div>
+        <p class="content has-text-left is-size-5">
+          <i>Left/Up:</i> <span class="dnerf">MagicDrive-V2</span> adopts a
+          progressive boostrap training, where we starts from low-resolution
+          images to high-resolution long videos.
+          <i>Right/Down</i>: for each stage, <span class="dnerf">MagicDrive-V2</span>
+          utilize a mixed data for training.
+        </p>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <section class="hero is-small">
+    <div class="hero-body">
+      <div class="container">
+        <h2 class="title is-3">Various Driving Scenarios</h2>
+        <p class="content has-text-left is-size-5">
+          <span class="dnerf">MagicDrive-V2</span> provides accurate ego
+          trajectory control in the 3D space, which supports generating various
+          driving scenarios.
+        </p>
+        <div id="results-carousel3" class="carousel results-carousel">
+          <div class="item">
+            <p class="content has-text-centered is-size-5">
+              <i>"yield the way"</i>
+            </p>
+            <video playsinline controls preload="none" muted loop width="100%">
+              <source data-src="./static/video/clips/yield.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="item">
+            <p class="content has-text-centered is-size-5">
+              <i>"through the intersection"</i>
+            </p>
+            <video playsinline controls preload="none" muted loop width="100%">
+              <source data-src="./static/video/clips/intersection.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="item">
+            <p class="content has-text-centered is-size-5">
+              <i>"over a speed bump"</i>
+            </p>
+            <video playsinline controls preload="none" muted loop width="100%">
+              <source data-src="./static/video/clips/speed bump.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="item">
+            <p class="content has-text-centered is-size-5">
+              <i>"change the lane"</i>
+            </p>
+            <video playsinline controls preload="none" muted loop width="100%">
+              <source data-src="./static/video/clips/change lane.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const carouselElement = document.querySelector('#results-carousel3');
+      const items = carouselElement.querySelectorAll('.item');
+
+      // add poster
+      const videos = carouselElement.querySelectorAll('video');
+      videos.forEach(video => {
+        const source = video.querySelector('source');
+        const videoSrc = source.dataset.src || source.src;
+
+        if (videoSrc) {
+          const videoName = videoSrc.split('/').pop().split('.').shift();
+          const posterPath = `./static/video/covers/${videoName}.jpg`;
+          video.setAttribute('poster', posterPath);
+        }
+      });
+
+      // Initialize the carousel with autoplay
+      const carousel = bulmaCarousel.attach('#results-carousel3', {
+        slidesToScroll: 1,
+        slidesToShow: 1,
+        loop: true,
+        infinite: false,
+        autoplay: false,
+        breakpoints: [],
+      })[0];
+
+      // Function to load video source
+      function loadVideo(videoElement) {
+        const source = videoElement.querySelector('source');
+        if (source.dataset.src && !source.src) {
+          source.src = source.dataset.src;
+          videoElement.load();
+        }
+      }
+
+      // Function to handle video play/pause
+      function handleVideos(bulmaCarouselInstance) {
+        if (bulmaCarouselInstance && bulmaCarouselInstance.next) {
+          currentIndex = bulmaCarouselInstance.next
+        } else {
+          currentIndex = 0
+        }
+        items.forEach((item, index) => {
+          const videos = item.querySelectorAll('video');
+          videos.forEach(video => {
+            if (index === currentIndex) {
+              loadVideo(video);
+              video.currentTime = 0; // Reset to start
+              video.play();
+            } else {
+              video.pause();
+            }
+          });
+        });
+      }
+
+      // Listen for carousel slide changes
+      carousel.on('after:show', function (bulmaCarouselInstance) {
+        handleVideos(bulmaCarouselInstance);
+      });
+
+      // Initial load
+      handleVideos();
+    });
+  </script>
+
+  <section class="hero is-small is-light">
+    <div class="hero-body">
+      <div class="container">
+        <h2 class="title is-3">More Video Examples</h2>
+        <p class="content has-text-left is-size-5">
+          Precise control over objects and road sematics is available by
+          <span class="dnerf">MagicDrive-V2</span>. We generations with
+          same configurations but diffferent weather/time-of-day conditions.
+        </p>
+        <div id="results-carousel2" class="carousel results-carousel">
+
+          <div class="item item-examples">
+            <div class="item item-expcol">
+              <video playsinline controls muted loop width="100%">
+                <source data-src="./static/video/edit/sample_0053_1696x4800_f233_fps12_filter_sunny+.mp4"
+                  type="video/mp4">
+              </video>
+            </div>
+            <div class="item item-expcol">
+              <video playsinline controls muted loop width="100%">
+                <source data-src="./static/video/edit/sample_0053_1696x4800_f233_fps12_filter_rainy+.mp4"
+                  type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+          <div class="item item-examples">
+            <div class="item item-expcol">
+              <video playsinline controls muted loop width="100%">
+                <source data-src="./static/video/edit/sample_0118_1696x4800_f233_fps12_filter_sunny+.mp4"
+                  type="video/mp4">
+              </video>
+              <div class="item item-expcol">
+              </div>
+              <video playsinline controls muted loop width="100%">
+                <source data-src="./static/video/edit/sample_0118_1696x4800_f233_fps12_filter_night+.mp4"
+                  type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+          <div class="item item-examples">
+            <div class="item item-expcol">
+              <video playsinline controls muted loop width="100%">
+                <source data-src="./static/video/edit/sample_0122_1696x4800_f233_fps12_filter_night+_2.mp4"
+                  type="video/mp4">
+              </video>
+              <div class="item item-expcol">
+              </div>
+              <video playsinline controls muted loop width="100%">
+                <source data-src="./static/video/edit/sample_0122_1696x4800_f233_fps12_filter_rainy+_2.mp4"
+                  type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const carouselElement = document.querySelector('#results-carousel2');
+      const items = carouselElement.querySelectorAll('.item-examples');
+
+      // add poster
+      items.forEach(item => {
+        const videos = item.querySelectorAll('video');
+        videos.forEach(video => {
+          const source = video.querySelector('source');
+          const videoSrc = source.dataset.src || source.src;
+
+          if (videoSrc) {
+            const videoName = videoSrc.split('/').pop().split('.').shift();
+            const posterPath = `./static/video/covers/${videoName}.jpg`;
+            video.setAttribute('poster', posterPath);
+          }
+        });
+      });
+
+      // Initialize the carousel with autoplay
+      const carousel = bulmaCarousel.attach('#results-carousel2', {
+        slidesToScroll: 1,
+        slidesToShow: 1,
+        loop: true,
+        infinite: false,
+        autoplay: false,
+        breakpoints: [],
+      })[0];
+
+      // Function to load video source
+      function loadVideo(videoElement) {
+        const source = videoElement.querySelector('source');
+        if (source.dataset.src && !source.src) {
+          source.src = source.dataset.src;
+          videoElement.load();
+        }
+      }
+
+      // Function to handle video play/pause
+      function handleVideos(bulmaCarouselInstance) {
+        if (bulmaCarouselInstance && bulmaCarouselInstance.next) {
+          currentIndex = bulmaCarouselInstance.next
+        } else {
+          currentIndex = 0
+        }
+        items.forEach((item, index) => {
+          const videos = item.querySelectorAll('video');
+          videos.forEach(video => {
+            if (index === currentIndex) {
+              loadVideo(video);
+              video.currentTime = 0; // Reset to start
+              video.play();
+            } else {
+              video.pause();
+            }
+          });
+        });
+      }
+
+      // Listen for carousel slide changes
+      carousel.on('after:show', function (bulmaCarouselInstance) {
+        handleVideos(bulmaCarouselInstance);
+      });
+
+      // Initial load
+      handleVideos();
+    });
+  </script>
+
+  <section class="hero is-small">
+    <div class="hero-body">
+      <div class="container" id="object-level">
+        <h2 class="title is-3">Object-level Control</h2>
+        <p class="content has-text-left is-size-5">
+          <span class="dnerf">MagicDrive-V2</span> provides precise controls
+          over each object's class, size, and trajectory.
+        </p>
+        <video playsinline preload="metadata" controls muted loop width="100%" style="border-radius: 10px;">
+          <source src="./static/video/edit/edit object_cut.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </section>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const carouselElement = document.querySelector('#object-level');
+      // add poster
+      const videos = carouselElement.querySelectorAll('video');
+      videos.forEach(video => {
+        const source = video.querySelector('source');
+        const videoSrc = source.src;
+
+        if (videoSrc) {
+          const videoName = videoSrc.split('/').pop().split('.').shift();
+          const posterPath = `./static/video/covers/${videoName}.jpg`;
+          video.setAttribute('poster', posterPath);
+        }
+      });
+    });
+  </script>
+
+  <section class="hero is-small is-light">
+    <div class="hero-body">
+      <div class="container">
+        <h2 class="title is-3">Extension: Fine-tuned
+          results on Waymo Open Dataset with Rich Text Control.</h2>
+
+        <p class="content is-size-5">To show diversity and controllability. We
+          generate the following videos with the same boxes & road maps & ego
+          trajectory from the validation split of the Waymo Open Dataset.
+          We use different text prompts to change the
+          weather/time-of-day/background of each video (from Sec. 4.4 of our
+          paper). All videos are with 3&times;848&times;1600, 193 frames at 10
+          FPS from single inference. Only 3 same-sized views are available in
+          Waymo for training.</p>
+
+        <p class="content is-size-4">🌧️Rainy:</p>
+        <div class="columns is-centered">
+          <video playsinline controls muted loop autoplay width="80%">
+            <source src="./static/video/waymo/sample_0090_848x4800_f193_fps10_full_sp8_slice_rain.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <p class="content is-size-4">🌫️Foggy:</p>
+        <div class="columns is-centered">
+          <video playsinline controls muted loop autoplay width="80%">
+            <source src="./static/video/waymo/sample_0090_848x4800_f193_fps10_full_sp8_slice_foggy.mp4"
+              type="video/mp4">
+          </video>
+        </div>
+
+        <p class="content is-size-4">🌙At Night:</p>
+        <div class="columns is-centered">
+          <video playsinline controls muted loop autoplay width="80%">
+            <source src="./static/video/waymo/sample_0090_848x4800_f193_fps10_full_sp8_slice_night.mp4"
+              type="video/mp4">
+          </video>
+        </div>
+
+        <p class="content is-size-4">🌄Twilight:</p>
+        <div class="columns is-centered">
+          <video playsinline controls muted loop autoplay width="80%">
+            <source src="./static/video/waymo/sample_0090_848x4800_f193_fps10_full_sp8_slice_dusk.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <p class="content is-size-4">☀️Sunny:</p>
+        <div class="columns is-centered">
+          <video playsinline controls muted loop autoplay width="80%">
+            <source src="./static/video/waymo/sample_0090_848x4800_f193_fps10_full_sp8_slice_sunny.mp4"
+              type="video/mp4">
+          </video>
+        </div>
+
+        <p class="content is-size-4">🏞Hill area, more trees🌳, less buildings:</p>
+        <div class="columns is-centered">
+          <video playsinline controls muted loop autoplay width="80%">
+            <source src="./static/video/waymo/sample_0090_848x4800_f193_fps10_full_sp8_slice_hill2.mp4"
+              type="video/mp4">
+          </video>
+        </div>
+
+        <br>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="content">
+          <h2 class="title is-4 has-text-centered">Please check our paper for more details and results!
+          </h2>
+          <p>
+            This website is licensed under a <a rel="license"
+              href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+              Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
